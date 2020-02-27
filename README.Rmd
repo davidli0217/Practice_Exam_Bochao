@@ -14,9 +14,9 @@ Clone this repo into Rstudio and fill in the necessary code.  Then, commit and p
 
 
 ```{r echo = F}
-install.packages("tidyverse")
-install.packages("nycflights13")
-install.packages("lubridate")
+#install.packages("tidyverse")
+#install.packages("nycflights13")
+#install.packages("lubridate")
 library(tidyverse)
 library(nycflights13)
 # flights
@@ -29,10 +29,10 @@ library(nycflights13)
 ```{r}
 library(lubridate)
 mutate_weather = weather %>% mutate(day_of_year = yday(time_hour))
-mutate_weather_more = mutate_weather %>% group_by(origin, day_of_year) %>% summarise(temp = mean(temp))
+mutate_weather_more = mutate_weather %>% group_by(origin, day_of_year) %>% summarise(meanTemp = mean(temp))
 mutate_weather_more
 ggplot(data = mutate_weather_more) + 
-  geom_point(mapping = aes(x = day_of_year, y = temp)) + 
+  geom_point(mapping = aes(x = day_of_year, y = meanTemp)) + 
   facet_wrap(~ origin, nrow = 1)
 ```
 
@@ -40,15 +40,15 @@ ggplot(data = mutate_weather_more) +
 **Make a non-tidy matrix of that data where each row is an airport and each column is a day of the year.**
 
 ```{r}
-weather_2 = select(mutate_weather, origin, day_of_year)
+weather_2 = mutate_weather_more %>% pivot_wider(names_from = day_of_year, values_from = meanTemp)
 weather_2
 ```
 
 **For each (airport, day) contruct a tidy data set of the airport's "performance" as the proportion of flights that departed less than an hour late.**
 
 ```{r}
-flights[which(flights$dep_delay <= 1)]
-summarise(flights, proportion = which(flights$dep_delay <= 1))
+#flights[which(flights$dep_delay <= 1)]
+#summarise(flights, proportion = which(flights$dep_delay <= 1))
 ```
 
 **Construct a tidy data set to that give weather summaries for each (airport, day).  Use the total precipitation, minimum visibility, maximum wind_gust, and average wind_speed.**
@@ -60,7 +60,7 @@ weather_4
 
 Construct a linear model to predict the performance of each (airport,day) using the weather summaries and a "fixed effect" for each airport.  Display the summaries.  
 ```{r}
-lm(performance ～ origin)
+#lm(performance ～ origin)
 ```
 
 Repeat the above, but only for EWR.  Obviously, exclude the fixed effect for each airport.
